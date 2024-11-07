@@ -33,14 +33,7 @@ def post_department(
 def get_departments(
     session: Session = Depends(get_session)
 ):
-    user = user_service.get_user()
-    
-    if user:
-        return bd.get_departments(session)
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+    return bd.get_departments(session)
 
 @department_router.put(
     "/update/{id}",
@@ -53,7 +46,7 @@ def update_department(
     ):
     user = user_service.get_user()
     
-    if user:
+    if user and user.is_admin:
         return bd.update_department(
             id=id, 
             department=department, 
@@ -73,7 +66,7 @@ def delete_department(
     ):
     user = user_service.get_user()
     
-    if user: 
+    if user and user.is_admin: 
         return bd.delete_department(id, session)
     else:
         return JSONResponse(

@@ -18,10 +18,10 @@ def create_app() -> FastAPI:
     application.add_middleware(GZipMiddleware)
     application.include_router(emp.employee_router)
     application.include_router(auth.auth_router)
-    # application.include_router(dep.department_router)
-    # application.include_router(pos.position_router)
-    # application.include_router(skill.skill_router)
-    # application.include_router(emp_skill.employee_skills_router)
+    application.include_router(dep.department_router)
+    application.include_router(pos.position_router)
+    application.include_router(skill.skills_router)
+    application.include_router(emp_skill.employee_skills_router)
     return application
 
 app = create_app()

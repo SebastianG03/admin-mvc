@@ -9,18 +9,15 @@ import uuid
 
 from core.services.user_service import user_service
 from entities.auth.auth_data import *
+from entities.employee.employee import EmployeeUpdate
+from entities.employee.workload import Workload
 from entities.tables.employee_tables import EmployeeModel 
+from entities.auth.user import User
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 
-# def verify_password(plain_password, hashed_password):
-#     return pwd_context.verify(plain_password, hashed_password)
-
-
-# def get_password_hash(password):
-#     return pwd_context.hash(password)
 
 def authenticate_user(email: str, password: str) -> EmployeeModel | None:
     user = user_service.get_user_by_email(email=email)

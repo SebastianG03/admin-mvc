@@ -35,14 +35,7 @@ def create_hard_skill(
     status_code=status.HTTP_200_OK
 )
 def get_hard_skills(session: Session = Depends(get_session)):
-    user = user_service.get_user()
-    
-    if user:
-        return sd.get_hard_skills(session)
-    else: 
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+    return sd.get_hard_skills(session)
         
 @skills_router.put(
     "/hard/update/{id}",
@@ -55,7 +48,7 @@ def update_hard_skill(
 ):
     user = user_service.get_user()
     
-    if user:
+    if user and user.is_admin:
         return sd.update_hard_skills(id, skill, session)
     else:
         return JSONResponse(
@@ -88,14 +81,7 @@ def create_soft_skill(
     status_code=status.HTTP_200_OK
 )
 def get_soft_skills(session: Session = Depends(get_session)):
-    user = user_service.get_user()
-    
-    if user:
-        return sd.get_soft_skills(session)
-    else: 
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+    return sd.get_soft_skills(session)
         
 @skills_router.put(
     "/soft/update/{id}",
@@ -108,7 +94,7 @@ def update_soft_skill(
 ):
     user = user_service.get_user()
     
-    if user:
+    if user and user.is_admin:
         return sd.update_soft_skills(id, skill, session)
     else:
         return JSONResponse(

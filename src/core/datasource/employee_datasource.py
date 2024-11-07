@@ -20,24 +20,22 @@ def getAllEmployees(session: Session) -> List[EmployeeModel]:
     return task_list
 
 def createEmployee(
-    employee: Employee,
-    session: Session) -> dict[str, any]:
-    result = user_service.get_user_by_email(employee.email)
-    if result:
-        raise HTTPException(status_code=400, detail=f"Employee with email {employee.email} already exists")
-    
-    employee_data = employee.model_dump()
-    
-    soft_skills_data = employee_data.pop('soft_skills', [])
-    hard_skills_data = employee_data.pop('hard_skills', [])
-    employee_db = EmployeeModel(**employee_data)
-    
-    session.add(employee_db)
-    session.commit()
-    session.refresh(employee_db)
+        employee: Employee,
+        session: Session) -> dict[str, any]:
+    try:
+        result = user_service.get_user_by_email(employee.email)
+        if result:
+            raise HTTPException(status_code=400, detail=f"Employee with email {employee.email} already exists")
+        employee_data = employee.model_dump()
+        employee_db = EmployeeModel(**employee_data)
 
-    return employee_data
+        session.add(employee_db)
+        session.commit()
+        session.refresh(employee_db)
 
+        return employee_data
+    except Exception as err:
+        raise err
 
 def updateEmployee(
     id: int, 
@@ -46,23 +44,14 @@ def updateEmployee(
     employee_db = session.query(EmployeeModel).get(id)  # Get given id
 
     if employee_db:
+        employee.id = id
         employee_data = employee.model_dump()
 
-        # contact_info_data = employee_data.pop('contact_info')
-        soft_skills_data = employee_data.pop('soft_skills')
-        hard_skills_data = employee_data.pop('hard_skills')
-
         employee_db = EmployeeModel(**employee_data)
-        # soft_skills_db = EmployeeSoftSkillsModel(**soft_skills_data)
-        # hard_skills_db = EmployeeHardSkillsModel(**hard_skills_data)
         
         for key, value in employee_data.items():
             setattr(employee_db, key, value)
-        # contact_info_db = ContactInfoModel(**contact_info_data)
-        # employee_db.contact_info = contact_info_db
-        # employee_db.soft_skills = soft_skills_db
-        # employee_db.hard_skills = hard_skills_db
-
+    
         employee_db = employee_data
         session.commit()
         session.refresh(employee_db)

@@ -8,6 +8,13 @@ class SoftSkillsModel(Base):
     name = Column(String(60), nullable=False)
     weight = Column(Integer, nullable=False)
     
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'weight': self.weight
+        }
+    
 class HardSkillsModel(Base):
     __tablename__ = 'hard_skills'
 
@@ -15,3 +22,9 @@ class HardSkillsModel(Base):
     name = Column(String(60), nullable=False)
     weight = Column(Integer, nullable=False)
     
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'weight': self.weight
+        }

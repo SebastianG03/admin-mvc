@@ -1,17 +1,16 @@
 from pydantic import BaseModel, EmailStr, Field
-from entities.employee.employee import EmployeeUpdate
 from entities.auth.token import Token, TokenData
+from entities.tables.employee_tables import EmployeeModel
 
 class User(BaseModel):
-    user_data: EmployeeUpdate
-    token: Token | None = None
-    # toke_data: TokenData
+    user_data: EmployeeModel
+    is_admin: bool = False
     disabled: bool | None = None
     
     class Config:
         from_attributes=True
         arbitrary_types_allowed=True
-        
+        populate_by_name = True
     
 class LoginModel(BaseModel):
     email: EmailStr = Field(
@@ -30,4 +29,5 @@ class LoginModel(BaseModel):
     class Config:
         from_attributes=True
         arbitrary_types_allowed=True
+        populate_by_name = True
     

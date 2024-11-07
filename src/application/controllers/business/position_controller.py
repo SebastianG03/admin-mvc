@@ -32,14 +32,7 @@ def create_position(
     status_code=status.HTTP_200_OK
 )
 def get_positions(session: Session = Depends(get_session)):
-    user = user_service.get_user()
-    
-    if user:
-        return bd.get_positions(session)
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+    return bd.get_positions(session)
         
 
 @position_router.put(
@@ -53,7 +46,7 @@ def update_position(
 ):
     user = user_service.get_user()
     
-    if user:
+    if user and user.is_admin:
         return bd.update_position(id, position, session)
     else:
         return JSONResponse(
@@ -70,7 +63,7 @@ def delete_position(
 ):
     user = user_service.get_user()
     
-    if user:
+    if user and user.is_admin:
         return bd.delete_position(id)
     else:
         return JSONResponse(

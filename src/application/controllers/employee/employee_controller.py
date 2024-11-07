@@ -14,13 +14,12 @@ employee_router = APIRouter(prefix="/employees", tags=["employees"])
         
 #Crud empleados
 @employee_router.get(
-    "/{id}", 
+    "/employee/{id}", 
     status_code=status.HTTP_200_OK,
-    # response_model=EmployeeModel
     )
 def getEmployeeById(id: int, session: Session = Depends(get_session)):
     user = user_service.get_user()
-    if user:
+    if user and user.is_admin:
         return ds.getEmployee(id, session)
     else:
         return JSONResponse(
@@ -30,34 +29,20 @@ def getEmployeeById(id: int, session: Session = Depends(get_session)):
 @employee_router.get(
     "/all",
     status_code=status.HTTP_200_OK,
-    # response_model=List[Employee]
     )
 def getEmployees(session: Session = Depends(get_session)):   
     try:
         user = user_service.get_user()
-        if user:
+        if user and user.is_admin:
             return ds.getAllEmployees(session)
         else:
             return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED, 
             content={"message": "Unauthorized Access"})
     except Exception as err:
-        raise Exception(err)
-
-@employee_router.put(
-    "/{id}",
-    status_code=status.HTTP_200_OK,
-    )
-def updateEmployee(id: int, 
-                   employee: EmployeeUpdate, 
-                   session: Session = Depends(get_session)):
-    user = user_service.get_user()
-    if user:
-        return ds.updateEmployee(id, employee, session)
-    else: 
         return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            content={"message": err})
 
 @employee_router.delete(
     "/{id}",
@@ -65,7 +50,7 @@ def updateEmployee(id: int,
     )
 def deleteEmployee(id: int, session: Session = Depends(get_session)):
     user = user_service.get_user()
-    if user:
+    if user and user.is_admin:
         return ds.deleteEmployee(id, session)
     else:
         return JSONResponse(

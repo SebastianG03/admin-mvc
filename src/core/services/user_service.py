@@ -9,20 +9,26 @@ class UserService:
         self.session = SessionLocal()
         self.user: User | None = None
     
-    def get_user_by_email(self, email) -> EmployeeModel | None:
-        # with self.session as session:
+    def get_user_by_email(self, email: str) -> EmployeeModel | None:
         statement = select(EmployeeModel).where(EmployeeModel.email == email)
         result = self.session.execute(statement)
         return result.scalars().first()
         
+        
     def set_user(self, user: User):
+        user.is_admin = user.user_data.position_id == 1
         self.user = user
         
     def logout(self):
         self.user = None
     
     def get_user(self) -> User | None : 
-        
         return self.user
+    
+    def user_json(self) -> dict:
+        if self.user is None:
+            return {}
+        data: EmployeeModel = self.user.user_data
+        return data.to_dict()
     
 user_service = UserService()
