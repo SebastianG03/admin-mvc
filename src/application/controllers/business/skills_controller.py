@@ -14,7 +14,7 @@ skills_router = APIRouter(prefix="/business/skills", tags=["skills"])
 
 #Hard Skills
 @skills_router.post(
-    "hard/create",
+    "/hard/create",
     status_code=status.HTTP_201_CREATED
 )
 def create_hard_skill(
@@ -33,7 +33,7 @@ def create_hard_skill(
         return resp.internal_server_error_response(err)
 
 @skills_router.post(
-    "hard/create/list",
+    "/hard/create/list",
     status_code=status.HTTP_201_CREATED
 )
 def create_hard_skill(
@@ -44,7 +44,7 @@ def create_hard_skill(
     try:
         # if user:
         for skill in skills:
-            return sd.post_hard_skills(
+            sd.post_hard_skills(
                 skill, session
             )
         return resp.created_response("Hard Skills created successfully") 
@@ -55,7 +55,7 @@ def create_hard_skill(
 
 
 @skills_router.get(
-    "hard/all",
+    "/hard/all",
     status_code=status.HTTP_200_OK
 )
 def get_hard_skills(session: Session = Depends(get_session)):
@@ -120,9 +120,10 @@ def create_soft_skill(
     try:
         # if user:
         for skill in skills:
-            return sd.post_soft_skills(
+            sd.post_soft_skills(
                 skill, session
             )
+        return resp.created_response("Soft Skills created successfully")
         # else:
         #     return resp.unauthorized_access_response
     except Exception as err:
