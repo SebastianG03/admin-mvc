@@ -16,7 +16,7 @@ class UserService:
         
         
     def set_user(self, user: User):
-        user.is_admin = user.user_data.position_id == 1
+        user.is_admin = user.user_data.position_id == 1 
         self.user = user
         
     def logout(self):

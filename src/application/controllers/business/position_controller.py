@@ -6,6 +6,7 @@ from entities.business import Position
 from core.database.database import get_session
 from core.services.user_service import user_service
 import core.datasource.business_datasource as bd
+import entities.helpers.responses as resp
 
 
 position_router = APIRouter(prefix="/business/position", tags=["position"])
@@ -20,12 +21,13 @@ def create_position(
 ):
     user = user_service.get_user()
     
-    if user:
+    try:
+        # if user:
         return bd.create_position(position, session)
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+        # else:
+        #     return resp.unauthorized_access_response
+    except Exception as err:
+        return resp.internal_server_error_response(err)
         
 @position_router.get(
     "/all",
@@ -46,26 +48,11 @@ def update_position(
 ):
     user = user_service.get_user()
     
-    if user and user.is_admin:
+    try:
+        if not user:
+            return resp.not_logged_response
+        if not user.is_admin:
+            return resp.unauthorized_access_response
         return bd.update_position(id, position, session)
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
-        
-@position_router.delete(
-    "/delete/{id}",
-    status_code=status.HTTP_204_NO_CONTENT
-)
-def delete_position(
-    id: int,
-    session: Session = Depends(get_session)
-):
-    user = user_service.get_user()
-    
-    if user and user.is_admin:
-        return bd.delete_position(id)
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+    except Exception as err:
+        return resp.internal_server_error_response(err)

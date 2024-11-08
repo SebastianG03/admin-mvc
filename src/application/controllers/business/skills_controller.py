@@ -6,6 +6,7 @@ from entities.employee import HardSkills, SoftSkills
 from core.database.database import get_session
 from core.services.user_service import user_service
 import core.datasource.skills_datasource as sd
+import entities.helpers.responses as resp
 
 
 skills_router = APIRouter(prefix="/business/skills", tags=["skills"])
@@ -20,23 +21,26 @@ def create_hard_skill(
     session: Session = Depends(get_session)
 ):
     user = user_service.get_user()
-    
-    if user:
+    try:
+        # if user:
         return sd.post_hard_skills(
             skill, session
         )
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+        # else:
+        #     return resp.unauthorized_access_response
+    except Exception as err:
+        return resp.internal_server_error_response(err)
 
 @skills_router.get(
     "hard/all",
     status_code=status.HTTP_200_OK
 )
 def get_hard_skills(session: Session = Depends(get_session)):
-    return sd.get_hard_skills(session)
-        
+    try:
+        return sd.get_hard_skills(session)
+    except Exception as err:
+        return resp.internal_server_error_response(err)
+    
 @skills_router.put(
     "/hard/update/{id}",
     status_code=status.HTTP_202_ACCEPTED
@@ -47,13 +51,16 @@ def update_hard_skill(
     session: Session = Depends(get_session)
 ):
     user = user_service.get_user()
-    
-    if user and user.is_admin:
+
+    try:        
+        if not user:
+            return resp.not_logged_response
+        if not user.is_admin:
+            return resp.unauthorized_access_response
+        
         return sd.update_hard_skills(id, skill, session)
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+    except Exception as err:
+        return resp.internal_server_error_response(err)
 
 #Soft Skills
 
@@ -67,14 +74,15 @@ def create_soft_skill(
 ):
     user = user_service.get_user()
     
-    if user:
+    try:
+        # if user:
         return sd.post_soft_skills(
             skill, session
         )
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+        # else:
+        #     return resp.unauthorized_access_response
+    except Exception as err:
+        return resp.internal_server_error_response(err) 
 
 @skills_router.get(
     "/soft/all",
@@ -94,9 +102,12 @@ def update_soft_skill(
 ):
     user = user_service.get_user()
     
-    if user and user.is_admin:
+    try:
+        if not user:
+            return resp.not_logged_response
+        if not user.is_admin:
+            return resp.unauthorized_access_response
+        
         return sd.update_soft_skills(id, skill, session)
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+    except Exception as err:
+        return resp.internal_server_error_response(err)

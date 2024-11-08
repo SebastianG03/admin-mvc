@@ -6,6 +6,7 @@ from entities.business import Department
 from core.database.database import get_session
 from core.services.user_service import user_service
 import core.datasource.business_datasource as bd
+import entities.helpers.responses as resp
 
 department_router = APIRouter(prefix="/business/departments", tags=["departments"])
 
@@ -19,12 +20,13 @@ def post_department(
     session: Session = Depends(get_session)):
     user = user_service.get_user()
     
-    if user:
+    try:
+        # if user:
         return bd.create_department(department, session)
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+        # else:
+        #     return resp.unauthorized_access_response
+    except Exception as err:
+        return resp.internal_server_error_response(err)
         
 @department_router.get(
     "/all",
@@ -42,33 +44,19 @@ def get_departments(
 def update_department(  
     id: int,
     department: Department,
-    session: Session = Depends(get_departments)
+    session: Session = Depends(get_session)
     ):
     user = user_service.get_user()
-    
-    if user and user.is_admin:
+    try:
+        if not user:
+            return resp.not_logged_response
+        if not user.is_admin:
+            return resp.unauthorized_access_response
+        
         return bd.update_department(
             id=id, 
             department=department, 
             session=session)
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
         
-@department_router.delete(
-    "/delete/{id}",
-    status_code=status.HTTP_204_NO_CONTENT
-)
-def delete_department(
-    id: int,
-    session: Session = Depends(get_session)
-    ):
-    user = user_service.get_user()
-    
-    if user and user.is_admin: 
-        return bd.delete_department(id, session)
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            content={"message": "Unauthorized Access"})
+    except Exception as err:
+        return resp.internal_server_error_response(err) 
