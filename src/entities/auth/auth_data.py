@@ -6,3 +6,6 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+## Lista palabras clave de roles administradores
+ADMIN_ROLES = ["administrador", "gerente", "director"]

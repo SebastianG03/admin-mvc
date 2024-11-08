@@ -39,10 +39,10 @@ def getEmployeeById(id: int, session: Session = Depends(get_session)):
 def getEmployees(session: Session = Depends(get_session)):   
     try:
         user = user_service.get_user()
-        if not user:
-            return resp.not_logged_response
-        if not user.is_admin:
-            return resp.unauthorized_access_response
+        # if not user:
+        #     return resp.not_logged_response
+        # if not user.is_admin:
+        #     return resp.unauthorized_access_response
         
         return ds.getAllEmployees(session)
         

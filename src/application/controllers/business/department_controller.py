@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -28,6 +29,26 @@ def post_department(
     except Exception as err:
         return resp.internal_server_error_response(err)
         
+@department_router.post(
+    "/create/list",
+    status_code=status.HTTP_201_CREATED
+    )
+def post_department(
+    departments: List[Department],
+    session: Session = Depends(get_session)):
+    user = user_service.get_user()
+    
+    try:
+        # if user:
+        for d in departments:
+            bd.create_department(d, session)
+        return resp.created_response("Departments created successfully")
+        # else:
+        #     return resp.unauthorized_access_response
+    except Exception as err:
+        return resp.internal_server_error_response(err)
+        
+
 @department_router.get(
     "/all",
     status_code=status.HTTP_200_OK
@@ -43,7 +64,8 @@ def get_departments(
 )
 def update_department(  
     id: int,
-    department: Department,
+    name: str,
+    location: str,
     session: Session = Depends(get_session)
     ):
     user = user_service.get_user()
@@ -55,7 +77,8 @@ def update_department(
         
         return bd.update_department(
             id=id, 
-            department=department, 
+            name=name,
+            location=location,
             session=session)
         
     except Exception as err:

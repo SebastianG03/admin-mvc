@@ -5,17 +5,16 @@ class Department(BaseModel):
     # id: str
     name: str = Field(
         min_length=3,
-        max_length=20,
+        max_length=55,
         alias="Name",
-        pattern="^[a-zA-Z]+[a-zA-Z ]*$",
+        pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ'’-]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑüÜ'’-]+)*$",
         title="Name",
         description="The name has to be a valid department name",
     )
     location: str = Field(
         min_length=3,
-        max_length=80,
+        max_length=95,
         alias="Location",
-        pattern="^[a-zA-Z]+[a-zA-Z ]*$",
         title="Location",
         description="The location has to be a valid location",
     )

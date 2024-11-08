@@ -5,9 +5,9 @@ class Position(BaseModel):
     # id: int
     name: str = Field(
         min_length=5,
-        max_length=40,
+        max_length=55,
         alias="Name",
-        pattern="^[a-zA-Z]+[a-zA-Z ]*$",
+        pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ'’-]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑüÜ'’-]+)*$",
         title="Name",
         description="The name has to be a valid position name",
     )

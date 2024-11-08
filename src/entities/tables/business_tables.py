@@ -7,7 +7,7 @@ class DepartmentModel(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     name = Column(String(60), nullable=False)
-    location = Column(String(60), nullable=False)
+    location = Column(String(100), nullable=False)
     
 class PositionModel(Base):
     __tablename__ = 'positions'

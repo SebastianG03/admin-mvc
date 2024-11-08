@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -28,6 +29,27 @@ def create_position(
         #     return resp.unauthorized_access_response
     except Exception as err:
         return resp.internal_server_error_response(err)
+
+@position_router.post(
+    "/create/list",
+    status_code=status.HTTP_201_CREATED
+)
+def create_position(
+    positions: List[Position],
+    session: Session = Depends(get_session)
+):
+    user = user_service.get_user()
+    
+    try:
+        # if user:
+        for position in positions:
+            bd.create_position(position, session)
+        return resp.created_response("Positions created successfully")
+        # else:
+        #     return resp.unauthorized_access_response
+    except Exception as err:
+        return resp.internal_server_error_response(err)
+
         
 @position_router.get(
     "/all",
@@ -43,7 +65,7 @@ def get_positions(session: Session = Depends(get_session)):
 )
 def update_position(
     id: int,
-    position: Position,
+    name: str,
     session: Session = Depends(get_session)
 ):
     user = user_service.get_user()
@@ -53,6 +75,6 @@ def update_position(
             return resp.not_logged_response
         if not user.is_admin:
             return resp.unauthorized_access_response
-        return bd.update_position(id, position, session)
+        return bd.update_position(id, name, session)
     except Exception as err:
         return resp.internal_server_error_response(err)

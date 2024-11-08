@@ -16,6 +16,12 @@ no_content_response: JSONResponse = JSONResponse(
     content="Oh! This is to clean!"
 )
 
+## General responses
+created_response: JSONResponse = lambda message: JSONResponse(
+    status_code=status.HTTP_201_CREATED, 
+    content={"message": message}
+)
+
 
 #Auth responses
 invalid_tokens_response: JSONResponse = JSONResponse(
@@ -40,7 +46,8 @@ already_logged_response: JSONResponse = JSONResponse(
     status_code=status.HTTP_400_BAD_REQUEST, 
     content={"message": "You are already logged. Log out before create an account"})
 
-### Toma un bool como argumento, si esta loggeado es True, caso contrario False.
+### Toma un bool como argumento, si esta loggeado es True, caso contrario False. Devolvera un JSON con el mensaje
+### correspondiente
 logout_response: JSONResponse = lambda logged: JSONResponse(
             status_code=status.HTTP_200_OK, 
             content={"message": "Logout Successfully"}) if logged else JSONResponse(
