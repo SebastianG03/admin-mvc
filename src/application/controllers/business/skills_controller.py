@@ -13,7 +13,7 @@ import entities.helpers.responses as resp
 skills_router = APIRouter(prefix="/business/skills", tags=["skills"])
 
 #Hard Skills
-skills_router.post(
+@skills_router.post(
     "hard/create",
     status_code=status.HTTP_201_CREATED
 )
@@ -32,7 +32,7 @@ def create_hard_skill(
     except Exception as err:
         return resp.internal_server_error_response(err)
 
-skills_router.post(
+@skills_router.post(
     "hard/create/list",
     status_code=status.HTTP_201_CREATED
 )
@@ -87,7 +87,7 @@ def update_hard_skill(
 
 #Soft Skills
 
-skills_router.post(
+@skills_router.post(
     "/soft/create",
     status_code=status.HTTP_201_CREATED
 )
@@ -107,8 +107,8 @@ def create_soft_skill(
     except Exception as err:
         return resp.internal_server_error_response(err) 
 
-skills_router.post(
-    "/soft/create",
+@skills_router.post(
+    "/soft/create/list",
     status_code=status.HTTP_201_CREATED
 )
 def create_soft_skill(
