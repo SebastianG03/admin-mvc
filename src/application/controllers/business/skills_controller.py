@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -30,6 +31,28 @@ def create_hard_skill(
         #     return resp.unauthorized_access_response
     except Exception as err:
         return resp.internal_server_error_response(err)
+
+skills_router.post(
+    "hard/create/list",
+    status_code=status.HTTP_201_CREATED
+)
+def create_hard_skill(
+    skills: List[HardSkills],
+    session: Session = Depends(get_session)
+):
+    user = user_service.get_user()
+    try:
+        # if user:
+        for skill in skills:
+            return sd.post_hard_skills(
+                skill, session
+            )
+        return resp.created_response("Hard Skills created successfully") 
+        # else:
+        #     return resp.unauthorized_access_response
+    except Exception as err:
+        return resp.internal_server_error_response(err)
+
 
 @skills_router.get(
     "hard/all",
@@ -83,6 +106,28 @@ def create_soft_skill(
         #     return resp.unauthorized_access_response
     except Exception as err:
         return resp.internal_server_error_response(err) 
+
+skills_router.post(
+    "/soft/create",
+    status_code=status.HTTP_201_CREATED
+)
+def create_soft_skill(
+    skills: List[SoftSkills],
+    session: Session = Depends(get_session)
+):
+    user = user_service.get_user()
+    
+    try:
+        # if user:
+        for skill in skills:
+            return sd.post_soft_skills(
+                skill, session
+            )
+        # else:
+        #     return resp.unauthorized_access_response
+    except Exception as err:
+        return resp.internal_server_error_response(err) 
+
 
 @skills_router.get(
     "/soft/all",

@@ -22,10 +22,10 @@ def post_department(
     user = user_service.get_user()
     
     try:
-        # if user:
-        return bd.create_department(department, session)
-        # else:
-        #     return resp.unauthorized_access_response
+        if user:
+            return bd.create_department(department, session)
+        else:
+            return resp.unauthorized_access_response
     except Exception as err:
         return resp.internal_server_error_response(err)
         
@@ -39,12 +39,12 @@ def post_department(
     user = user_service.get_user()
     
     try:
-        # if user:
-        for d in departments:
-            bd.create_department(d, session)
-        return resp.created_response("Departments created successfully")
-        # else:
-        #     return resp.unauthorized_access_response
+        if user:
+            for d in departments:
+                bd.create_department(d, session)
+            return resp.created_response("Departments created successfully")
+        else:
+            return resp.unauthorized_access_response
     except Exception as err:
         return resp.internal_server_error_response(err)
         
