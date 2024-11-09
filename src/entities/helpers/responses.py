@@ -11,11 +11,6 @@ internal_server_error_response: JSONResponse = lambda message: JSONResponse(
     content={"message": message}
 )
 
-no_content_response: JSONResponse = JSONResponse(
-    status_code=status.HTTP_204_NO_CONTENT,
-    content="Oh! This is to clean!"
-)
-
 ## General responses
 created_response: JSONResponse = lambda message: JSONResponse(
     status_code=status.HTTP_201_CREATED, 
