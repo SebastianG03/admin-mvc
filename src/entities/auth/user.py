@@ -4,6 +4,7 @@ from entities.tables.employee_tables import EmployeeModel
 
 class User(BaseModel):
     user_data: EmployeeModel
+    token: Token | None
     is_admin: bool = False
     disabled: bool | None = None
     

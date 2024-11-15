@@ -1,3 +1,4 @@
+from datetime import timedelta
 from fastapi import APIRouter, Response, status
 
 
@@ -9,8 +10,11 @@ from requests import Session
 import core.datasource.employee_datasource as ds
 import entities.helpers.responses as resp
 from core.datasource.auth_datasource import (
-    authenticate_user)
+    authenticate_user,
+    create_access_token
+    )
 from entities.employee.employee import Employee, EmployeeUpdate
+from entities.auth.auth_data import ACCESS_TOKEN_EXPIRE_MINUTES
 from entities.auth.token import Token
 from entities.auth.user import LoginModel, User
 from core.services.user_service import user_service
@@ -24,10 +28,13 @@ def login_for_access_token(
     login_data: LoginModel) -> Token:
     try:
         user = authenticate_user(login_data.email, login_data.password)
+        token = create_access_token(user_data=user.to_dict(), 
+                                    expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+        token_data = Token(access_token=token, token_type="HS256")
         if not user:
             return resp.invalid_tokens_response
     
-        user_service.set_user(user = User(user_data = user))
+        user_service.set_user(user = User(user_data = user, token=token_data))
         return resp.login_successful_response 
     except Exception as err:
         return resp.internal_server_error_response(err)
@@ -63,7 +70,10 @@ def create_user(employee: Employee, session: Session = Depends(get_session)):
 
         ds.createEmployee(employee, session)
         user = user_service.get_user_by_email(email=employee.email)
-        user_service.set_user(user = User(user_data=user))     
+        token = create_access_token(user_data=user.to_dict(), 
+                                    expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+        token_data = Token(access_token=token, token_type="HS256")
+        user_service.set_user(user = User(user_data=user), token=token_data)     
         return Response(content="User created and logged.")
     except Exception as err:
         return resp.internal_server_error_response(err)

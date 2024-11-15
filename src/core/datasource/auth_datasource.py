@@ -1,9 +1,8 @@
 from datetime import datetime, timedelta, timezone
-import json
 from fastapi import APIRouter
 from fastapi import HTTPException
 import uuid
-# from jwt import encode
+from jwt import encode
 # import jwt
 
 
@@ -27,18 +26,17 @@ def authenticate_user(email: str, password: str) -> EmployeeModel | None:
         return None
     return user
 
-def create_access_token(user_data: dict, expires_delta: timedelta | None = None):
+def create_access_token(user_data: dict, 
+                        expires_delta: timedelta | None = None):
     payload = {}
     
     payload['user'] = user_data
-    payload['exp'] = str(datetime.now(timezone.utc) + (
-        expires_delta if expires_delta else timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    ))
+    payload['exp'] = datetime.now(timezone.utc).timestamp() + expires_delta.total_seconds()
+    payload['iat'] = datetime.now(timezone.utc).timestamp()
     payload['jti'] = str(uuid.uuid4())
     
-    # token = encode(payload=payload, key=SECRET_KEY, algorithm=ALGORITHM )
-   
-    return payload
+    token = encode(payload=payload, key=SECRET_KEY, algorithm=ALGORITHM)
+    return token
 
 async def get_current_active_user():
     current_user = user_service.get_user()

@@ -1,9 +1,14 @@
-from sqlalchemy import Sequence, select
-from core.database.database import SessionLocal
+import base64
+from datetime import datetime, timezone
+from jwt import decode
+from sqlalchemy import select
 from entities.tables.employee_tables import EmployeeModel
 from entities.auth.user import User 
 from entities.tables.business_tables import PositionModel      
-from entities.auth.auth_data import ADMIN_ROLES 
+from entities.auth.auth_data import ADMIN_ROLES, ALGORITHM, SECRET_KEY
+from core.services.logger_service import logger
+
+from core.database.database import SessionLocal
 
 
 class UserService:
@@ -37,12 +42,38 @@ class UserService:
         self.user = None
     
     def get_user(self) -> User | None : 
-        return self.user
+        is_expire = self.toke_is_expire()
+        
+        if is_expire:
+            self.logout()
+            return None
+        else:
+            return self.user
+            
     
     def user_json(self) -> dict:
         if self.user is None:
             return {}
         data: EmployeeModel = self.user.user_data
-        return data.to_dict()
+        dict_data = data.to_dict()
+        token = self.user.token.model_dump()
+        # dict_data['token'] = token
+        return dict_data
+    
+    def toke_is_expire(self) -> bool:
+        user = self.user
+        if user is None:
+            return True
+        token = user.token.access_token
+        payload = decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
+        exp = payload['exp']
+        iat = payload['iat']
+        create_time = datetime.fromtimestamp(iat)
+        expire_time = datetime.fromtimestamp(exp)
+        # logger.info('create_time: ' + str(create_time) + ' expire_time: ' + str(expire_time))
+        if create_time > expire_time:
+            return True
+        return False
+
     
 user_service = UserService()
