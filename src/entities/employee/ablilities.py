@@ -11,6 +11,7 @@ class Ability(BaseModel):
     )
     
 class EmployeeAbility(BaseModel):
+    id: int
     domain: int = Field(
         min = 1,
         max = 10,

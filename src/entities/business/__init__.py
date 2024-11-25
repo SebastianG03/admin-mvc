@@ -1,2 +1,2 @@
-from .department import *
-from .position import *
+from .department import Department
+from .position import Position

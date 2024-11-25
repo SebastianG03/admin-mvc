@@ -1,9 +1,10 @@
 from pydantic import BaseModel, EmailStr, Field
 from entities.auth.token import Token, TokenData
 from entities.tables.employee_tables import EmployeeModel
+from entities.employee.employee import EmployeeUpdate
 
 class User(BaseModel):
-    user_data: EmployeeModel
+    user_data: EmployeeUpdate
     token: Token | None
     is_admin: bool = False
     disabled: bool | None = None

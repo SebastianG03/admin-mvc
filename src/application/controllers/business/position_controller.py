@@ -23,10 +23,12 @@ def create_position(
     user = user_service.get_user()
     
     try:
-        if user:
-            return bd.create_position(position, session)
-        else:
+        if not user:
+            return resp.not_logged_response
+        if not user.is_admin:
             return resp.unauthorized_access_response
+        
+        return bd.create_position(position, session)
     except Exception as err:
         return resp.internal_server_error_response(err)
 
@@ -41,12 +43,14 @@ def create_position(
     user = user_service.get_user()
     
     try:
-        if user:
-            for position in positions:
-                bd.create_position(position, session)
-            return resp.created_response("Positions created successfully")
-        else:
-            return resp.unauthorized_access_response
+        # if not user:
+        #     return resp.not_logged_response
+        # if not user.is_admin:
+        #     return resp.unauthorized_access_response
+        
+        for position in positions:
+            bd.create_position(position, session)
+        return resp.created_response("Positions created successfully")
     except Exception as err:
         return resp.internal_server_error_response(err)
 

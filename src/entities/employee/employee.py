@@ -49,9 +49,10 @@ class Employee(BaseModel):
         alias="Position", 
         description="The position has to be a valid position.",
     )
-    workload: Optional[Workload] = Field(
+    workload: Optional[str] = Field(
         alias="Workload", 
-        description="The workload has to be a valid workload (1-100).",
+        examples=["No work", "low", "medium", "high", "overwork"],
+        description="Can be no work, low, medium, high or overwork.",
     )
     salary: Optional[float] = Field(
         gt=0, 
@@ -110,9 +111,10 @@ class EmployeeUpdate(BaseModel):
         alias="Position", 
         description="The position has to be a valid position.",
     )
-    workload: Optional[Workload] = Field(
+    workload: Optional[str] = Field(
         alias="Workload", 
-        description="The workload has to be a valid workload (1-100).",
+        examples=["No work", "low", "medium", "high", "overwork"],
+        description="Can be no work, low, medium, high or overwork.",
     )
     salary: Optional[float] = Field(
         gt=0, 

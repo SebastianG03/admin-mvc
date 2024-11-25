@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import HTTPException
 from sqlalchemy import Sequence
 from sqlalchemy.orm import Session
@@ -6,6 +7,7 @@ from entities.tables.skills_tables import HardSkillsModel, SoftSkillsModel
 from entities.tables.employee_skills_tables import EmployeeHardSkillsModel, EmployeeSoftSkillsModel
 from entities.employee.hard_skills import HardSkills
 from entities.employee.soft_skills import SoftSkills
+from core.services.logger_service import logger
 
 
 ### Hard skills table
@@ -22,9 +24,15 @@ def post_hard_skills(
     
     return hard_skill.model_dump()
 
-def get_hard_skills(session: Session) -> HardSkillsModel:
+def get_hard_skills(session: Session) -> List[HardSkillsModel]:
     hard_skills = session.query(HardSkillsModel).all()
     return hard_skills
+
+def get_hard_skills_by_ids(ids: List[int], session: Session) -> List[HardSkillsModel]:
+    hard_skills = session.query(HardSkillsModel).filter(HardSkillsModel.id.in_(ids)).all()
+    logger.info('Hard Skills: ', hard_skills)
+    return hard_skills
+
 
 def update_hard_skills(id: int, skills: HardSkills, session: Session):
     skills_db = session.execute(HardSkillsModel).get(id)
@@ -55,8 +63,13 @@ def post_soft_skills(
     
     return soft_skill.model_dump()
 
-def get_soft_skills(session: Session) -> SoftSkillsModel:
+def get_soft_skills(session: Session) -> List[SoftSkillsModel]:
     soft_skills = session.query(SoftSkillsModel).all()
+    return soft_skills
+
+def get_soft_skills_by_ids(ids: List[int], session: Session) -> List[SoftSkillsModel]:
+    soft_skills = session.query(SoftSkillsModel).filter(SoftSkillsModel.id.in_(ids)).all()
+    logger.info('Soft Skills: ', soft_skills)
     return soft_skills
 
 def update_soft_skills(id: int, skills: SoftSkills, session: Session):

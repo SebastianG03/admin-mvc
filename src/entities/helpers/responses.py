@@ -11,6 +11,12 @@ internal_server_error_response: JSONResponse = lambda message: JSONResponse(
     content={"message": message}
 )
 
+invalid_format_error_response: JSONResponse = lambda message: JSONResponse(
+    status_code=status.HTTP_502_BAD_GATEWAY, 
+    content={"message": message}
+)
+
+
 ## General responses
 created_response: JSONResponse = lambda message: JSONResponse(
     status_code=status.HTTP_201_CREATED, 

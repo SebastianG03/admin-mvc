@@ -21,11 +21,13 @@ def post_department(
     session: Session = Depends(get_session)):
     user = user_service.get_user()
     
+    
     try:
-        if user:
-            return bd.create_department(department, session)
-        else:
+        if not user:
+            return resp.not_logged_response
+        if not user.is_admin:
             return resp.unauthorized_access_response
+        return bd.create_department(department, session)
     except Exception as err:
         return resp.internal_server_error_response(err)
         
@@ -39,12 +41,13 @@ def post_department(
     user = user_service.get_user()
     
     try:
-        if user:
-            for d in departments:
-                bd.create_department(d, session)
-            return resp.created_response("Departments created successfully")
-        else:
-            return resp.unauthorized_access_response
+        # if not user:
+        #     return resp.not_logged_response
+        # if not user.is_admin:
+        #     return resp.unauthorized_access_response
+        for d in departments:
+            bd.create_department(d, session)
+        return resp.created_response("Departments created successfully")
     except Exception as err:
         return resp.internal_server_error_response(err)
         
@@ -69,6 +72,8 @@ def update_department(
     session: Session = Depends(get_session)
     ):
     user = user_service.get_user()
+    is_admin = user.is_admin
+    
     try:
         if not user:
             return resp.not_logged_response

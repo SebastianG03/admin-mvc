@@ -13,7 +13,7 @@ class EmployeeModel(Base):
     password = Column(String(50), nullable=False)
     department_id = Column(Integer, ForeignKey('departments.id'), nullable=False)
     position_id = Column(Integer, ForeignKey('positions.id'), nullable=False)
-    workload = Mapped[Workload]
+    workload = Column(String(60), nullable=True)
     salary = Column(Float, nullable=False)
     phone = Column(String(20), nullable=True)
     address = Column(String(120), nullable=True)
@@ -27,7 +27,7 @@ class EmployeeModel(Base):
             "email": self.email,
             "department_id": self.department_id,
             "position_id": self.position_id,
-            # "workload": self.workload, 
+            "workload": self.workload, 
             "salary": self.salary,
             "phone": self.phone,
             "address": self.address,

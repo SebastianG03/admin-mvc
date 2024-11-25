@@ -28,7 +28,7 @@ def getEmployeeById(id: int, session: Session = Depends(get_session)):
             return resp.not_logged_response
         if not user.is_admin:
             return resp.unauthorized_access_response
-        return ds.getEmployee(id, session)
+        return ds.get_employee(id, session)
     except Exception as err:
         return resp.internal_server_error_response(err)
 
@@ -36,15 +36,61 @@ def getEmployeeById(id: int, session: Session = Depends(get_session)):
     "/all",
     status_code=status.HTTP_200_OK,
     )
-def getEmployees(session: Session = Depends(get_session)):   
+def get_employees(session: Session = Depends(get_session)):   
     try:
-        user = user_service.get_user()
+        # user = user_service.get_user()
+        # if not user:
+        #     return resp.not_logged_response
+        # if not user.is_admin:
+        #     return resp.unauthorized_access_response
+        
+        return ds.get_all_employees(session)
+        
+    except Exception as err:
+        return resp.internal_server_error_response(err)
+    
+# Find by skills and weight
+@employee_router.get(
+    "/sort/by/weight",
+    status_code=status.HTTP_200_OK,
+    )
+def find_employees_by_weight(session: Session = Depends(get_session)):
+    user = user_service.get_user()
+    try:
         if not user:
             return resp.not_logged_response
         if not user.is_admin:
             return resp.unauthorized_access_response
-        
-        return ds.getAllEmployees(session)
-        
+        return ds.get_employees_by_weight(session)
+    except Exception as err:
+        return resp.internal_server_error_response(err)
+    
+@employee_router.get(
+    "/find/by/hard-skill",
+    status_code=status.HTTP_200_OK,
+)
+def find_employees_by_hard_skill(skill_id: int, session: Session = Depends(get_session)):
+    user = user_service.get_user()
+    try:
+        if not user:
+            return resp.not_logged_response
+        if not user.is_admin:
+            return resp.unauthorized_access_response
+        return ds.get_employees_by_hard_skill(skill_id, session)
+    except Exception as err:
+        return resp.internal_server_error_response(err)
+    
+@employee_router.get(
+    "/find/by/soft-skill",
+    status_code=status.HTTP_200_OK,
+)
+def find_employees_by_soft_skill(skill_id: int, session: Session = Depends(get_session)):
+    user = user_service.get_user()
+    try:
+        if not user:
+            return resp.not_logged_response
+        if not user.is_admin:
+            return resp.unauthorized_access_response
+        return ds.get_employees_by_soft_skill(skill_id, session)
     except Exception as err:
         return resp.internal_server_error_response(err)

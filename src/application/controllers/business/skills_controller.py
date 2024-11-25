@@ -22,13 +22,15 @@ def create_hard_skill(
     session: Session = Depends(get_session)
 ):
     user = user_service.get_user()
+    
     try:
-        # if user:
+        if not user:
+            return resp.not_logged_response
+        if not user.is_admin:
+            return resp.unauthorized_access_response
         return sd.post_hard_skills(
             skill, session
         )
-        # else:
-        #     return resp.unauthorized_access_response
     except Exception as err:
         return resp.internal_server_error_response(err)
 
@@ -41,15 +43,18 @@ def create_hard_skill(
     session: Session = Depends(get_session)
 ):
     user = user_service.get_user()
+    
     try:
-        # if user:
+        # if not user:
+            # return resp.not_logged_response
+        # if not user.is_admin:
+            # return resp.unauthorized_access_response
+        
         for skill in skills:
             sd.post_hard_skills(
                 skill, session
             )
         return resp.created_response("Hard Skills created successfully") 
-        # else:
-        #     return resp.unauthorized_access_response
     except Exception as err:
         return resp.internal_server_error_response(err)
 
@@ -98,12 +103,15 @@ def create_soft_skill(
     user = user_service.get_user()
     
     try:
-        # if user:
+        if not user:
+            return resp.not_logged_response
+        if not user.is_admin:
+            return resp.unauthorized_access_response
+        
         return sd.post_soft_skills(
             skill, session
         )
-        # else:
-        #     return resp.unauthorized_access_response
+        
     except Exception as err:
         return resp.internal_server_error_response(err) 
 
@@ -118,14 +126,16 @@ def create_soft_skill(
     user = user_service.get_user()
     
     try:
-        # if user:
+        # if not user:
+            # return resp.not_logged_response
+        # if not user.is_admin:
+            # return resp.unauthorized_access_response
+        
         for skill in skills:
             sd.post_soft_skills(
                 skill, session
             )
         return resp.created_response("Soft Skills created successfully")
-        # else:
-        #     return resp.unauthorized_access_response
     except Exception as err:
         return resp.internal_server_error_response(err) 
 
