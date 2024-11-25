@@ -1,6 +1,5 @@
 from typing import List
 from fastapi import HTTPException
-from sqlalchemy import Sequence
 from sqlalchemy.orm import Session
 
 from entities.tables.business_tables import DepartmentModel, PositionModel

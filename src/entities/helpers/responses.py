@@ -16,10 +16,20 @@ invalid_format_error_response: JSONResponse = lambda message: JSONResponse(
     content={"message": message}
 )
 
+object_not_found_error: JSONResponse = lambda message: JSONResponse(
+    status_code=status.HTTP_404_NOT_FOUND, 
+    content={"message": message}
+)
+
 
 ## General responses
 created_response: JSONResponse = lambda message: JSONResponse(
     status_code=status.HTTP_201_CREATED, 
+    content={"message": message}
+)
+
+successful_fetch_response: JSONResponse = lambda message: JSONResponse(
+    status_code=status.HTTP_200_OK,
     content={"message": message}
 )
 

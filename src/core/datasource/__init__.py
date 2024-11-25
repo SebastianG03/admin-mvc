@@ -43,3 +43,10 @@ from .skills_datasource import (
     get_hard_skills_by_ids, 
     get_soft_skills_by_ids
 )
+
+from .department_skills_datasource import (
+    add_department_skills,
+    update_department_skills,
+    get_department_skills,
+    delete_department_skills
+)
