@@ -82,6 +82,7 @@ def get_department_skills(department_id: int,
         .filter(DepartmentsSoftSkillsModel.department_id == department_id)
         .all())
         
+        
         return {
             "hard_skills": [skill.to_dict() for skill in department_hard_skills],
             "soft_skills": [skill.to_dict() for skill in department_soft_skills]
