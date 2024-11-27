@@ -21,8 +21,27 @@ def get_user_weight(session: Session = Depends(get_session)):
     
     if not user:
         return resp.not_logged_response
+    
+    weight = ds.get_employee_weight(employee_id= user.user_data.id, session=session)
+    range = "Unknown"
+    if weight >= 0.15 and weight <= 0.5:
+        range = "Beginner"
+    elif weight > 0.5 and weight <= 1.5:
+        range = "Intermediate"
+    elif weight > 1.5 and weight <= 2.5:
+        range = "Advanced"
+    elif weight > 2.5 and weight <= 3.5:
+        range = "Expert"
+    elif weight > 3.5 and weight <= 4.5:
+        range = "Master"
+    elif weight > 4.5 and weight <= 5.5:
+        range = "Grandmaster"
+    elif weight > 5.5:
+        range = "Legendary"
+    
     return {
-        "weight": ds.get_employee_weight(employee_id= user.user_data.id, session=session)
+        "weight": weight,
+        "Rango": range,
     }
 
 

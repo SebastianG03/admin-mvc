@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from fastapi import HTTPException
 import uuid
 from jwt import encode
-# import jwt
 
 
 from core.services.user_service import user_service

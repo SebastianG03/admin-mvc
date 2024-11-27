@@ -57,10 +57,10 @@ def get_employees(session: Session = Depends(get_session)):
 def find_employees_by_weight(session: Session = Depends(get_session)):
     user = user_service.get_user()
     try:
-        if not user:
-            return resp.not_logged_response
-        if not user.is_admin:
-            return resp.unauthorized_access_response
+        # if not user:
+        #     return resp.not_logged_response
+        # if not user.is_admin:
+        #     return resp.unauthorized_access_response
         return ds.get_employees_by_weight(session)
     except Exception as err:
         return resp.internal_server_error_response(err)
@@ -72,10 +72,10 @@ def find_employees_by_weight(session: Session = Depends(get_session)):
 def find_employees_by_hard_skill(skill_id: int, session: Session = Depends(get_session)):
     user = user_service.get_user()
     try:
-        if not user:
-            return resp.not_logged_response
-        if not user.is_admin:
-            return resp.unauthorized_access_response
+        # if not user:
+        #     return resp.not_logged_response
+        # if not user.is_admin:
+        #     return resp.unauthorized_access_response
         return ds.get_employees_by_hard_skill(skill_id, session)
     except Exception as err:
         return resp.internal_server_error_response(err)
@@ -87,10 +87,10 @@ def find_employees_by_hard_skill(skill_id: int, session: Session = Depends(get_s
 def find_employees_by_soft_skill(skill_id: int, session: Session = Depends(get_session)):
     user = user_service.get_user()
     try:
-        if not user:
-            return resp.not_logged_response
-        if not user.is_admin:
-            return resp.unauthorized_access_response
+        # if not user:
+        #     return resp.not_logged_response
+        # if not user.is_admin:
+        #     return resp.unauthorized_access_response
         return ds.get_employees_by_soft_skill(skill_id, session)
     except Exception as err:
         return resp.internal_server_error_response(err)
