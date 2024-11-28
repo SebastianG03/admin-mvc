@@ -7,8 +7,15 @@ from entities.tables import *
 from entities.helpers.employee_collection import EmployeeValue
 
 from core.services.user_service import user_service
-from core.datasource.employee_skills_datasource import get_employee_weight
+from core.datasource.employee_skills_datasource import (
+    get_employee_weight,
+    get_skills_weight
+    )
 from core.services.logger_service import logger
+
+from entities.auth.auth_data import ADMIN_ROLES, ALGORITHM, SECRET_KEY
+
+
 
 def get_employee(
     id: int,
@@ -18,6 +25,23 @@ def get_employee(
     if not employee:
         raise HTTPException(status_code=404, detail=f"Employee with id {id} not found")
     return employee
+
+def get_managers(session: Session) -> List[EmployeeModel]:
+    admin_roles = ADMIN_ROLES
+    
+    employees = session.query(EmployeeModel).all()
+    managers: List[EmployeeModel] = []
+
+    for employee in employees:
+        position_id = employee.position_id
+        position: PositionModel = session.query(PositionModel).get(position_id)
+        position_name = set(position.name.split())
+        
+        if any(role in position_name for role in ADMIN_ROLES):
+            managers.append(employee)
+        
+        return managers
+        
 
 def get_all_employees(session: Session) -> List[EmployeeModel]: 
     task_list = session.query(EmployeeModel).all() 
@@ -75,28 +99,37 @@ def delete_employee(id: int, session: Session):
 
 ### Sort employees methods
 
-def _sort_employees_by_weight(employees: List[EmployeeModel], session: Session) -> List[EmployeeModel]:
+def _sort_employees_by_weight(employees: List[EmployeeModel], session: Session) -> List[EmployeeValue]:
     employee_values: List[EmployeeValue]= []
 
     for employee in employees:
         weight = get_employee_weight(employee.id, session)
-        employee_val = EmployeeValue()
-        employee_val.employee = employee
-        employee_val.weight = weight
+        soft_weight = get_skills_weight(employee_id=employee.id,
+                                       session=session,
+                                       employee_skill_model=EmployeeSoftSkillsModel)
+        hard_weight = get_skills_weight(employee_id=employee.id,
+                                        session=session,
+                                        employee_skill_model=EmployeeHardSkillsModel)
+        employee_val = EmployeeValue(employee=employee, 
+                                     weight=weight,
+                                     hard_weight=hard_weight,
+                                     soft_weight=soft_weight)
         employee_values.append(employee_val)
     
     sorted_employees = sorted(employee_values, key=lambda x: x.weight, reverse=True)
-    sorted_employees_list: List[EmployeeModel] = [employee.employee for employee in sorted_employees]
-    return sorted_employees_list
+    return sorted_employees
 
-def get_employees_by_weight(session: Session) -> List[EmployeeModel]:
-    employees = get_all_employees(session)
+def get_employees_by_weight(
+    session: Session,
+    employees = List[EmployeeModel]) -> List[EmployeeValue]:
+    if len(employees) == 0:
+        employees = get_all_employees(session)
     logger.info('Sorting Employees: ', employees)
     sorted_employees = _sort_employees_by_weight(employees, session)
     logger.info('Sorted Employees: ', sorted_employees)
     return sorted_employees
 
-def get_employees_by_soft_skill(skill_id: int, session: Session) -> List[EmployeeModel]:
+def get_employees_by_soft_skill(skill_id: int, session: Session) -> List[EmployeeValue]:
     employees: List[EmployeeModel] = get_all_employees(session)
     employee_soft_skills: List[EmployeeSoftSkillsModel] = session.query(EmployeeSoftSkillsModel).all()
     
@@ -116,7 +149,7 @@ def get_employees_by_soft_skill(skill_id: int, session: Session) -> List[Employe
         
     return _sort_employees_by_weight(employee_filtered, session)
 
-def get_employees_by_hard_skill(skill_id: int, session: Session) -> List[EmployeeModel]:
+def get_employees_by_hard_skill(skill_id: int, session: Session) -> List[EmployeeValue]:
     employees: List[EmployeeModel] = get_all_employees(session)
     employee_hard_skills: List[EmployeeHardSkillsModel] = session.query(EmployeeHardSkillsModel).all()
     

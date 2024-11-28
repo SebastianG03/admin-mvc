@@ -10,6 +10,7 @@ from core.services.user_service import user_service
 import entities.helpers.responses as resp
 from entities.auth.user import User
 from entities.employee.ablilities import EmployeeAbility
+from entities.tables.employee_skills_tables import EmployeeHardSkillsModel, EmployeeSoftSkillsModel
 
 
 employee_skills_router = APIRouter(prefix="/employee/skills", tags=["employee skills"])
@@ -24,20 +25,14 @@ def get_user_weight(session: Session = Depends(get_session)):
     
     weight = ds.get_employee_weight(employee_id= user.user_data.id, session=session)
     range = "Unknown"
-    if weight >= 0.15 and weight <= 0.5:
-        range = "Beginner"
-    elif weight > 0.5 and weight <= 1.5:
-        range = "Intermediate"
-    elif weight > 1.5 and weight <= 2.5:
-        range = "Advanced"
-    elif weight > 2.5 and weight <= 3.5:
-        range = "Expert"
-    elif weight > 3.5 and weight <= 4.5:
-        range = "Master"
-    elif weight > 4.5 and weight <= 5.5:
-        range = "Grandmaster"
-    elif weight > 5.5:
-        range = "Legendary"
+    if weight >= 0.15 and weight <= 1:
+        range = "Low relevance"
+    elif weight > 1 and weight <= 5:
+        range = "Relevant"
+    elif weight > 5 and weight <= 10:
+        range = "Essential"
+    elif weight > 10:
+        range = "Priceless"
     
     return {
         "weight": weight,
@@ -45,7 +40,36 @@ def get_user_weight(session: Session = Depends(get_session)):
     }
 
 
+
 #Soft user skills
+
+@employee_skills_router.get("/weight/soft")
+def get_user_soft_weight(session: Session = Depends(get_session)):
+    user: User = user_service.get_user()
+    
+    if not user:
+        return resp.not_logged_response
+    
+    weight = ds.get_skills_weight(employee_id=user.user_data.id,
+                                  session=session,
+                                  employee_skill_model=EmployeeSoftSkillsModel)
+    range = "Unknown"
+    if weight >= 10 and weight <= 100:
+        range = "Low relevance"
+    elif weight > 100 and weight <= 350:
+        range = "Relevant"
+    elif weight > 350 and weight <= 700:
+        range = "Essential"
+    elif weight > 700:
+        range = "Priceless"
+    
+    return {
+        "weight": weight,
+        "Rango": range,
+    }
+
+
+
 @employee_skills_router.get("/soft/all")
 def get_user_soft_skills(session: Session = Depends(get_session)):
     user: User = user_service.get_user()
@@ -108,6 +132,33 @@ def delete_user_soft_skills(
         return resp.internal_server_error_response(err)
 
 #Hard user skills
+
+@employee_skills_router.get("/weight/hard")
+def get_user_hard_weight(session: Session = Depends(get_session)):
+    user: User = user_service.get_user()
+    
+    if not user:
+        return resp.not_logged_response
+    
+    weight = ds.get_skills_weight(employee_id=user.user_data.id,
+                                  session=session,
+                                  employee_skill_model=EmployeeHardSkillsModel)
+    range = "Unknown"
+    if weight >= 10 and weight <= 100:
+        range = "Low relevance"
+    elif weight > 100 and weight <= 350:
+        range = "Relevant"
+    elif weight > 350 and weight <= 700:
+        range = "Essential"
+    elif weight > 700:
+        range = "Priceless"
+    
+    return {
+        "weight": weight,
+        "Rango": range,
+    }
+
+
 @employee_skills_router.get("/hard/all")
 def get_user_soft_skills(session: Session = Depends(get_session)):
     user: User = user_service.get_user()

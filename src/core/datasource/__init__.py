@@ -11,6 +11,7 @@ from .employee_datasource import (
     get_employee_weight,
     get_employees_by_soft_skill, 
     get_employees_by_hard_skill,
+    get_managers
 )
 from .business_datasource import (
     create_department,
@@ -32,6 +33,7 @@ from .employee_skills_datasource import (
     post_user_soft_skills,
     update_user_hard_skills,
     update_user_soft_skills,
+    get_skills_weight,
 )
 from .skills_datasource import (
     get_hard_skills,
