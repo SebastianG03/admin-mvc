@@ -11,7 +11,7 @@ import core.datasource.employee_datasource as ds
 import entities.helpers.responses as resp
 from core.datasource.auth_datasource import (
     authenticate_user,
-    create_access_token
+    # create_access_token
     )
 from entities.employee.employee import Employee, EmployeeUpdate
 from entities.auth.auth_data import ACCESS_TOKEN_EXPIRE_MINUTES
@@ -29,9 +29,9 @@ def login_for_access_token(
     login_data: LoginModel) -> Token:
     try:
         user = authenticate_user(login_data.email, login_data.password)
-        token = create_access_token(user_data=user.to_dict(), 
-                                    expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-        token_data = Token(access_token=token, token_type="HS256")
+        # token = create_access_token(user_data=user.to_dict(), 
+        #                             expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+        # token_data = Token(access_token=token, token_type="HS256")
         if not user:
             return resp.invalid_tokens_response
         
@@ -47,7 +47,7 @@ def login_for_access_token(
             Address=user.address,
             Salary=user.salary
         ) 
-        user_service.set_user(user = User(user_data = employee_user, token=token_data))
+        user_service.set_user(user = User(user_data = employee_user))
         return resp.login_successful_response 
     except Exception as err:
         return resp.internal_server_error_response(err)
@@ -88,9 +88,9 @@ def create_user(employee: Employee, session: Session = Depends(get_session)):
         
         ds.create_employee(employee, session)
         user = user_service.get_user_by_email(email=employee.email)
-        token = create_access_token(user_data=user.to_dict(), 
-                                    expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-        token_data = Token(access_token=token, token_type="HS256")
+        # token = create_access_token(user_data=user.to_dict(), 
+        #                             expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+        # token_data = Token(access_token=token, token_type="HS256")
         
         employee_user: EmployeeUpdate = EmployeeUpdate(
             id=user.id,
@@ -104,7 +104,7 @@ def create_user(employee: Employee, session: Session = Depends(get_session)):
             Address=user.address,
             Salary=user.salary
         ) 
-        user_service.set_user(user = User(user_data = employee_user, token=token_data))
+        user_service.set_user(user = User(user_data = employee_user))
              
         return Response(content="User created and logged.")
     except Exception as err:

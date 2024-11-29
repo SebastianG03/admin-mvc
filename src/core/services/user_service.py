@@ -1,6 +1,6 @@
 import base64
 from datetime import datetime, timezone
-from jwt import decode
+# from jwt import decode
 from sqlalchemy import select
 from entities.tables.employee_tables import EmployeeModel
 from entities.employee.employee import EmployeeUpdate
@@ -42,13 +42,13 @@ class UserService:
         self.user = None
     
     def get_user(self) -> User | None : 
-        is_expire = self.token_is_expired()
+        # is_expire = self.token_is_expired()
         
-        if is_expire:
-            self.logout()
-            return None
-        else:
-            return self.user
+        # if is_expire:
+            # self.logout()
+            # return None
+        # else:
+        return self.user
             
     
     def user_json(self) -> dict:
@@ -56,24 +56,24 @@ class UserService:
             return {}
         employee: EmployeeUpdate = self.user.user_data
         dict_data = employee.model_dump()
-        token = self.user.token.model_dump()
+        # token = self.user.token.model_dump()
         # dict_data['token'] = token
         return dict_data
     
-    def token_is_expired(self) -> bool:
-        user = self.user
-        if user is None:
-            return True
-        token = user.token.access_token
-        payload = decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
-        exp = payload['exp']
-        iat = payload['iat']
-        create_time = datetime.fromtimestamp(iat)
-        expire_time = datetime.fromtimestamp(exp)
-        # logger.info('create_time: ' + str(create_time) + ' expire_time: ' + str(expire_time))
-        if create_time > expire_time:
-            return True
-        return False
+    # def token_is_expired(self) -> bool:
+    #     user = self.user
+    #     if user is None:
+    #         return True
+    #     token = user.token.access_token
+    #     payload = decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
+    #     exp = payload['exp']
+    #     iat = payload['iat']
+    #     create_time = datetime.fromtimestamp(iat)
+    #     expire_time = datetime.fromtimestamp(exp)
+    #     # logger.info('create_time: ' + str(create_time) + ' expire_time: ' + str(expire_time))
+    #     if create_time > expire_time:
+    #         return True
+    #     return False
 
     
 user_service = UserService()
