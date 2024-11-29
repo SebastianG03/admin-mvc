@@ -48,7 +48,7 @@ def login_for_access_token(
             Salary=user.salary
         ) 
         user_service.set_user(user = User(user_data = employee_user))
-        return resp.login_successful_response 
+        return resp.login_successful_response(user.to_dict()) 
     except Exception as err:
         return resp.internal_server_error_response(err)
 

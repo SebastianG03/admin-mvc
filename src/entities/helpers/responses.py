@@ -39,9 +39,9 @@ invalid_tokens_response: JSONResponse = JSONResponse(
     status_code=status.HTTP_400_BAD_REQUEST, 
     content={"message": "Invalid email or password"}
 )
-login_successful_response: JSONResponse = JSONResponse(
+login_successful_response: JSONResponse = lambda user_data:JSONResponse(
     status_code=status.HTTP_200_OK, 
-    content={"message": "Login Successful"}
+    content={"user": user_data}
 )
 
 user_exists_response: JSONResponse = JSONResponse(

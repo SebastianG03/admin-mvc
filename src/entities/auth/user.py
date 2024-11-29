@@ -5,7 +5,7 @@ from entities.employee.employee import EmployeeUpdate
 
 class User(BaseModel):
     user_data: EmployeeUpdate
-    token: Token | None
+    # token: Token | None
     is_admin: bool = False
     disabled: bool | None = None
     
