@@ -121,7 +121,7 @@ def _sort_employees_by_weight(employees: List[EmployeeModel], session: Session) 
 
 def get_employees_by_weight(
     session: Session,
-    employees = List[EmployeeModel]) -> List[EmployeeValue]:
+    employees: List[EmployeeModel] = []) -> List[EmployeeValue]:
     if len(employees) == 0:
         employees = get_all_employees(session)
     logger.info('Sorting Employees: ', employees)
