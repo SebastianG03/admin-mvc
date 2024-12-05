@@ -27,7 +27,6 @@ def get_employee(
     return employee
 
 def get_managers(session: Session) -> List[EmployeeModel]:
-    admin_roles = ADMIN_ROLES
     
     employees = session.query(EmployeeModel).all()
     managers: List[EmployeeModel] = []
@@ -40,7 +39,7 @@ def get_managers(session: Session) -> List[EmployeeModel]:
         if any(role in position_name for role in ADMIN_ROLES):
             managers.append(employee)
         
-        return managers
+    return managers
         
 
 def get_all_employees(session: Session) -> List[EmployeeModel]: 
