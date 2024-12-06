@@ -96,8 +96,7 @@ def get_skills_weight(
     
         return get_soft_skills_weight(employee_soft_skills, soft_skills, department_soft_skills)
         
-        
-        return 
+    
         
     if employee_skill_model == EmployeeHardSkillsModel:
         employee_hard_skills = get_user_hard_skills(employee_id=employee_id, session=session)
